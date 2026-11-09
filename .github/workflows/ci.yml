@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: hookrelay
+          POSTGRES_PASSWORD: hookrelay
+          POSTGRES_DB: hookrelay
+        ports: ["5433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U hookrelay" --health-interval 2s --health-retries 20
+      rabbitmq:
+        image: rabbitmq:3.13-alpine
+        ports: ["5673:5672"]
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping" --health-interval 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test

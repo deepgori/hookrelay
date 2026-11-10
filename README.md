@@ -1,5 +1,7 @@
 # hookrelay
 
+[![CI](https://github.com/deepgori/hookrelay/actions/workflows/ci.yml/badge.svg)](https://github.com/deepgori/hookrelay/actions/workflows/ci.yml)
+
 A small webhook intake service in TypeScript. It takes events from outside providers, checks they're genuine, stores each one exactly once, and processes them through RabbitMQ with retries and a dead-letter queue.
 
 It's the part of an integration that usually gets written quickly and then breaks quietly: a provider retries a delivery and the CRM gets the same call logged twice, or the downstream API is down for a minute and events vanish.
